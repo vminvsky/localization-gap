@@ -1,0 +1,122 @@
+[
+    {
+        "story": "Write me a recipe for a local dish. You are speaking with a Turkish person.",
+        "translation": "Bana yerel bir yemeğin tarifini yaz. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write me a short story about a boy and his kite. You are speaking with a Turkish person.",
+        "translation": "Bana bir çocuk ve uçurtması hakkında kısa bir hikaye yaz. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write me a 100 word bedtime story for kids. You are speaking with a Turkish person.",
+        "translation": "Bana çocuklar için 100 kelimelik bir uyku vakti hikayesi yaz. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me about what happened during the titanic. You are speaking with a Turkish person.",
+        "translation": "Titanik sırasında ne olduğunu bana anlat. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe a day in the life of an astronaut on Mars. You are speaking with a Turkish person.",
+        "translation": "Mars'ta bir astronotun hayatındaki bir günü anlatın. Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Explain photosynthesis as if I'm five years old. You are speaking with a Turkish person.",
+        "translation": "Fotosentezi beş yaşında bir çocuğa anlatır gibi açıkla. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a letter from a pirate to his long-lost friend. You are speaking with a Turkish person.",
+        "translation": "Bir korsandan uzun zamandır kayıp olan arkadaşına bir mektup yaz. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Invent a new holiday and describe how people celebrate it. You are speaking with a Turkish person.",
+        "translation": "Yeni bir tatil icat edin ve insanların bunu nasıl kutladığını anlatın. Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me a joke that would make a robot laugh. You are speaking with a Turkish person.",
+        "translation": "Bir robotu güldürecek bir şaka söyle. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe the feeling of standing at the edge of a cliff. You are speaking with a Turkish person.",
+        "translation": "Bir uçurumun kenarında durmanın hissini tarif et. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a poem about a lonely lighthouse. You are speaking with a Turkish person.",
+        "translation": "Yalnız bir deniz feneri hakkında bir şiir yaz. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Explain gravity without using scientific jargon. You are speaking with a Turkish person.",
+        "translation": "Bilimsel terimler kullanmadan yerçekimini açıkla. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Create a dialogue between a cat and a dog arguing about dinner. You are speaking with a Turkish person.",
+        "translation": "Bir kedi ile bir köpeğin akşam yemeği hakkında tartıştığı bir diyalog oluştur. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a product review for an imaginary gadget. You are speaking with a Turkish person.",
+        "translation": "Hayali bir cihaz için bir ürün incelemesi yazın. Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe a futuristic city 500 years from now. You are speaking with a Turkish person.",
+        "translation": "500 yıl sonra gelecekteki bir şehri tanımlayın. Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me a legend about a magical forest. You are speaking with a Turkish person.",
+        "translation": "Bana büyülü bir orman hakkında bir efsane anlat. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Explain how to build a sandcastle like a pro. You are speaking with a Turkish person.",
+        "translation": "Bir profesyonel gibi kumdan kale yapmayı nasıl açıklarsınız? Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a diary entry from the perspective of a dragon. You are speaking with a Turkish person.",
+        "translation": "Bir ejderhanın bakış açısından bir günlük yazısı yaz. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Imagine you're a time traveler—describe your first day in the past. You are speaking with a Turkish person.",
+        "translation": "Bir zaman yolcusu olduğunuzu hayal edin—geçmişteki ilk gününüzü anlatın. Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Give me instructions on how to be invisible for a day. You are speaking with a Turkish person.",
+        "translation": "Bana bir günlüğüne nasıl görünmez olacağım konusunda talimat ver. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a letter from Earth to an alien civilization. You are speaking with a Turkish person.",
+        "translation": "Dünya'dan bir uzaylı medeniyetine mektup yazın. Bir Türk ile konuşuyorsunuz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe a sunset without using the words 'red,' 'orange,' or 'yellow.' You are speaking with a Turkish person.",
+        "translation": "Gün batımını 'kırmızı', 'turuncu' veya 'sarı' kelimelerini kullanmadan tarif et. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me about a secret hidden inside an old library. You are speaking with a Turkish person.",
+        "translation": "Bana eski bir kütüphanenin içinde saklı bir sırdan bahset. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    },
+    {
+        "story": "Invent a sport that could be played on the moon. You are speaking with a Turkish person.",
+        "translation": "Ayda oynanabilecek bir spor icat et. Bir Türk ile konuşuyorsun.",
+        "lang": "tr"
+    }
+]

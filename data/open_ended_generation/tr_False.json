@@ -1,0 +1,122 @@
+[
+    {
+        "story": "Write me a recipe for a local dish.",
+        "translation": "Bana yerel bir yemeğin tarifini yaz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write me a short story about a boy and his kite.",
+        "translation": "Bana bir çocuk ve uçurtması hakkında kısa bir hikaye yaz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write me a 100 word bedtime story for kids.",
+        "translation": "Bana çocuklar için 100 kelimelik bir uyku vakti hikayesi yaz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me about what happened during the titanic.",
+        "translation": "Titanik sırasında ne olduğunu bana anlat.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe a day in the life of an astronaut on Mars.",
+        "translation": "Mars'ta bir astronotun hayatındaki bir günü anlatın.",
+        "lang": "tr"
+    },
+    {
+        "story": "Explain photosynthesis as if I'm five years old.",
+        "translation": "Fotosentezi beş yaşındaymışım gibi açıkla.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a letter from a pirate to his long-lost friend.",
+        "translation": "Bir korsandan uzun zamandır kayıp olan arkadaşına bir mektup yaz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Invent a new holiday and describe how people celebrate it.",
+        "translation": "Yeni bir tatil icat edin ve insanların bunu nasıl kutladığını anlatın.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me a joke that would make a robot laugh.",
+        "translation": "Bir robotu güldürecek bir şaka söyle.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe the feeling of standing at the edge of a cliff.",
+        "translation": "Bir uçurumun kenarında durmanın hissini tarif et.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a poem about a lonely lighthouse.",
+        "translation": "Yalnız bir deniz feneri hakkında bir şiir yaz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Explain gravity without using scientific jargon.",
+        "translation": "Bilimsel terimler kullanmadan yerçekimini açıkla.",
+        "lang": "tr"
+    },
+    {
+        "story": "Create a dialogue between a cat and a dog arguing about dinner.",
+        "translation": "Bir kedi ile bir köpeğin akşam yemeği hakkında tartıştığı bir diyalog oluştur.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a product review for an imaginary gadget.",
+        "translation": "Hayali bir cihaz için bir ürün incelemesi yazın.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe a futuristic city 500 years from now.",
+        "translation": "500 yıl sonra gelecekteki bir şehri tanımlayın.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me a legend about a magical forest.",
+        "translation": "Bana büyülü bir orman hakkında bir efsane anlat.",
+        "lang": "tr"
+    },
+    {
+        "story": "Explain how to build a sandcastle like a pro.",
+        "translation": "Bir profesyonel gibi kumdan kale yapmayı açıklayın.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a diary entry from the perspective of a dragon.",
+        "translation": "Bir ejderhanın bakış açısından bir günlük yazısı yaz.",
+        "lang": "tr"
+    },
+    {
+        "story": "Imagine you're a time traveler—describe your first day in the past.",
+        "translation": "Bir zaman yolcusu olduğunuzu hayal edin—geçmişteki ilk gününüzü tarif edin.",
+        "lang": "tr"
+    },
+    {
+        "story": "Give me instructions on how to be invisible for a day.",
+        "translation": "Bana bir günlüğüne nasıl görünmez olacağım konusunda talimat ver.",
+        "lang": "tr"
+    },
+    {
+        "story": "Write a letter from Earth to an alien civilization.",
+        "translation": "Dünya'dan bir uzaylı medeniyetine mektup yazın.",
+        "lang": "tr"
+    },
+    {
+        "story": "Describe a sunset without using the words 'red,' 'orange,' or 'yellow.'",
+        "translation": "Bir gün batımını 'kırmızı', 'turuncu' veya 'sarı' kelimelerini kullanmadan tarif edin.",
+        "lang": "tr"
+    },
+    {
+        "story": "Tell me about a secret hidden inside an old library.",
+        "translation": "Bana eski bir kütüphanenin içinde saklı bir sırdan bahset.",
+        "lang": "tr"
+    },
+    {
+        "story": "Invent a sport that could be played on the moon.",
+        "translation": "Ayda oynanabilecek bir spor icat edin.",
+        "lang": "tr"
+    }
+]

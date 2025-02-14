@@ -31,6 +31,8 @@ def estimate_cost(prompts, model_name, model_name_mappings):
         'deepseek-ai/DeepSeek-V3': ('cl100k_base', 0.00000125),
         'claude-3-5-sonnet-20241022': ('cl100k_base', 0.00000125),
         'mistralai/Mixtral-8x22B-Instruct-v0.1': ('cl100k_base', 0.00000125),
+        'google/gemma-2-9b-it': ('cl100k_base', 0.00000125),
+        'gpt-4o': ('cl100k_base', 0.00000125),
     }
 
     full_model_name = model_name_mappings[model_name]

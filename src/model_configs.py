@@ -16,15 +16,14 @@ model_configs = {
     "openai": {
         "temperature": 1,
         "batch_size": 1,
-        "num_threads": 70,
+        "num_threads": 50,
     }
 }
 
 def return_client(provider):
     if provider == 'openai':
         client = OpenAI(
-            base_url="http://localhost:2436/v1",
-            api_key="token-abc123",
+            api_key=os.environ.get("OPENAI_API_KEY"),
         )
     elif provider == 'together':
         api_key = os.environ.get("TOGETHER_API_KEY")
@@ -49,7 +48,9 @@ model_name_mappings = {
     'llama-3.1-70b-instruct-turbo': "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
     'llama-3.3-70b-instruct-turbo': "meta-llama/Llama-3.3-70B-Instruct-Turbo",
     "Gemma 2 27B": "google/gemma-2-27b-it",
+    "Gemma 2 9b": "google/gemma-2-9b-it",
     "DeepSeek-V3": "deepseek-ai/DeepSeek-V3",
     "claude-3.5-sonnet": "claude-3-5-sonnet-20241022",
-    'mixtral-8x22b-instruct': 'mistralai/Mixtral-8x22B-Instruct-v0.1'
+    'mixtral-8x22b-instruct': 'mistralai/Mixtral-8x22B-Instruct-v0.1',   
+    "gpt-4o": "gpt-4o",
 }

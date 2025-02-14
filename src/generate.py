@@ -69,10 +69,15 @@ def main(langs=['en', 'tr', 'de', 'fr', 'ru'], suffixes=[True, False], k=3):
     """
     run_models = [
         # {'model_name': 'DeepSeek-V3', 'provider': 'together'},
-        {'model_name': 'llama-3.1-8b-instruct-turbo', 'provider': 'together'},
-        {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
+        # {'model_name': 'llama-3.1-8b-instruct-turbo', 'provider': 'together'},
+        # {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
+        # {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
+        # {'model_name': 'aya_8b_it', 'provider': 'together'},
+        {'model_name': "Gemma 2 9b", 'provider': 'together'},
+        {'model_name': "Gemma 2 27B", 'provider': 'together'},
+        {'model_name': "gpt-4o", 'provider': 'openai'},
         # {'model_name': "mixtral-8x22b-instruct", 'provider': 'together'},
-        {'model_name': "claude-3.5-sonnet", 'provider': 'anthropic'},
+        # {'model_name': "claude-3.5-sonnet", 'provider': 'anthropic'},
     ]
     for model in run_models:
         model_name = model['model_name']

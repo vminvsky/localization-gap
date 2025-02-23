@@ -1,0 +1,6 @@
+vector,alpha,layer,country,translated,local_ans_steer,local_ans_no_steer
+implicit,1,25,Bangladesh,True,0.6955017301038062,0.6280276816608996
+implicit,2,26,France,True,0.5948275862068966,0.5465517241379311
+implicit,1,25,Russia,True,0.6144144144144145,0.5315315315315315
+implicit,2,23,Turkey,True,0.6542857142857142,0.5585714285714286
+implicit,1,25,United States,True,0.6213921901528013,0.5178268251273345

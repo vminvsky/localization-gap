@@ -3,7 +3,7 @@ import sys
 import os
 from pathlib import Path
 import json
-
+import pandas as pd
 sys.path.append('llm-localization')
 from tools.contrastiveact import contrastive_act_gen_opt
 from tqdm import trange
@@ -11,33 +11,47 @@ from nnsight import LanguageModel
 from transformers import AutoTokenizer
 import torch as t 
 from tqdm import tqdm
+from dataclasses import dataclass
+from torch.utils.data import Dataset
 
-
-
-SAMPLE_SIZE = 50
-tokenizer = AutoTokenizer.from_pretrained("/scratch/gpfs/vv7118/models/hub/models--google--gemma-2-9b-it/snapshots/11c9b309abf73637e4b6f9a3fa1e92e615547819/")
-nnmodel = LanguageModel('/scratch/gpfs/vv7118/models/hub/models--google--gemma-2-9b-it/snapshots/11c9b309abf73637e4b6f9a3fa1e92e615547819/', 
-                        device_map='cuda:0', 
-                        dispatch=True, 
-                        torch_dtype=t.bfloat16)
-
-alpha = 2
-
-import pandas as pd 
-df = pd.read_csv('data/all_models_eval_subset.csv')
-df['swapped'] = False
-
-if True:
-    swapped = pd.read_csv('data/all_models_eval_subset_swapped.csv')
-    df = pd.concat([df, swapped], ignore_index=True)
 
 def messages_to_str(messages, tokenizer, instruction_model=True):
     if type(messages) == str:
         messages = [{"role":"user", "content":messages}]
     if instruction_model:
         return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        
+class PromptDataset(Dataset):
+    def __init__(self, prompts):
+        self.prompts = prompts
 
-# prompts = df[df['country'] == 'Russia']['input']
+    def __len__(self):
+        return len(self.prompts)
+
+    def __getitem__(self, idx):
+        return self.prompts[idx]
+
+def prepare_prompts(lang, run_with_suffix=False):
+    with open(f'data/open_ended_generation/{lang}_{run_with_suffix}.json', 'r') as f:
+        stories = json.load(f)
+    return stories
+
+
+
+SAMPLE_SIZE = 50
+tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-9b-it", device_map='auto')
+nnmodel = LanguageModel('google/gemma-2-9b-it', 
+                        device_map='auto', 
+                        dispatch=True, 
+                        torch_dtype=t.bfloat16)
+
+alpha = 2
+
+def generate_prompts_chat(lang: str = 'en', run_with_suffix=False):
+    fpath = f'data/open_ended_generation/{lang}_{run_with_suffix}.json'
+    data = json.load(open(fpath, 'r'))
+    return messages_to_str([{"role": "user", "content": prompt['translation']} for prompt in data], tokenizer)
+    
 
 langs = ['us', 'ru', 'fr', 'bn','tr']
 lang_mapping = {
@@ -48,6 +62,7 @@ lang_mapping = {
     'tr': 'Turkish'
 }
 
+
 country_mapping = {
     'us': 'United States',
     'ru': 'Russia',
@@ -56,61 +71,48 @@ country_mapping = {
     'tr': 'Turkey'
 }
 
+batch_size = 64
+
+@dataclass
+class Output:
+    alpha: float
+    layer: int
+    prompt: str 
+    lang: str
+    suffix: bool 
+
 for lang in langs:
-    steering_vec = t.load(f'llm-localization/gemma2_9b_it/universal/trans_universal_{lang}_out.pt')
-    # steering_vec = t.load('llm-localization/gemma2_9b_it/universal/en_universal_all_cultures.pt')
+    steering_vec = t.load(f'steering/gemma2_9b_it/per_culture/{lang}_trans_avg_all_tasks.pt').unsqueeze(1)
 
-    # Create steering_outputs directory if it doesn't exist
-    output_dir = Path(f'steering_outputs/translated_steering/{lang}/')
-    output_dir.mkdir(exist_ok=True)
+    for suffix in suffixes:
+        outputs = []
 
+        prompts = prepare_prompts(lang, suffix)
+        prompt_formats = generate_prompts_chat(lang, suffix)
 
-    df2 = df[df['lang'] == lang_mapping[lang]]
-    df2 = df2[df2['country'] == country_mapping[lang]]
-    df2 = df2[df2['hint'] == False]
-    df2 = df2.drop_duplicates(subset=['prompt'])
-    prompts_to_limit_to = df2.groupby(['subtask'])['key'].sample(SAMPLE_SIZE, random_state=42)
-    df2 = df2[df2['key'].isin(prompts_to_limit_to.values)]
-    df2 = df2.drop_duplicates(subset=['key', 'swapped'])
+        prompt_batch = [prompt_formats[i:i + batch_size] for i in range(0, len(prompt_formats), batch_size)]
+        for batch in prompt_batch:
+            with t.no_grad():
+                out = contrastive_act_gen_opt(nnmodel, tokenizer, 
+                                            alpha * steering_vec[25].unsqueeze(0), 
+                                            prompt=batch, layer=[25], 
+                                            n_new_tokens=256, use_sampling=False)
+                for j,layer in enumerate(out[0]):
+                    texts = out[0][layer]
+                    probs = out[1]
+                    epsilon = 1e-6
+                    probs[probs < epsilon] = 0
 
-    print(df2.groupby(['subtask'])['key'].count())
+                    for k, text in enumerate(texts):
+                        out_dict = {"prompt": batch[k], "alpha": alpha, "steer_out": text, "steer_prob": probs[j,k,:,:].to_sparse(), "layer": layer}
+                        out_dict.update(batch_entries[i][k])
+                        outputs.append(out_dict)
+                        pass
+            t.cuda.empty_cache() # Clear GPU memory after each alpha 
+        output_filename = f'data/open_ended_generation/steering_{alpha}/{lang}_{suffix}.json'
 
-    print("Processing", len(df2), "questions")
-
-    for i, row in tqdm(df2.iterrows(), total=len(df2)):
-        # Check if output file already exists
-        output_path = output_dir / f'output_{i}.json'
-        if output_path.exists():
-            continue
-            
-        prompt = row['prompt']
-        question = row['question']
-
-        prompt = prompt.replace(',3,4', '')
-        prompt = messages_to_str(prompt, tokenizer, instruction_model=True)
-        out = contrastive_act_gen_opt(nnmodel, tokenizer, 
-                                      alpha * steering_vec[25].unsqueeze(0), 
-                                      prompt=prompt, layer=[25], 
-                                      n_new_tokens=50, use_sampling=False)
-        out = out[0]
-        # Save the output to a json file
-        output_data = {
-            "prompt": prompt,
-            "output": out[25][0],
-            "alpha": alpha,
-            "layers": [25],
-            "question": question,
-            "ans_local_idx": row['ans_local_idx'],
-            "ans_west_idx": row['ans_west_idx'],
-            'country': row['country'],
-            'lang': row['lang'],
-            'subtask': row['subtask'],
-            'ans_local': row['ans_local'],
-            'swapped': row['swapped'],
-            'key': row['key'],
-        }
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(output_data, f, indent=2, ensure_ascii=False)
+        with open(output_filename, 'w', encoding='utf-8') as f:
+            json.dump(outputs, f, indent=2, ensure_ascii=False)
 
         del out
         gc.collect()

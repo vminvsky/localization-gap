@@ -35,7 +35,7 @@ langs = [
     {'target_lang': 'tr', 'suffix': "You are speaking with a Turkish person."},
     {'target_lang': 'de', 'suffix': "You are speaking with a German person."},
     {'target_lang': 'fr', 'suffix': "You are speaking with a French person."},
-    {'target_lang': 'en', 'suffix': "You are speaking with an English person."},
+    {'target_lang': 'en', 'suffix': "You are speaking with an American person."},
     {'target_lang': 'ru', 'suffix': "You are speaking with a Russian person."},
 ]
 

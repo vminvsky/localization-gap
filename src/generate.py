@@ -13,8 +13,7 @@ from collections import defaultdict
 
 load_dotenv()
 
-from prompts import PromptDataset, generate_prompts_chat, prepare_prompts
-from utils import model_paths, printv, estimate_cost
+from prompts import generate_prompts_chat, prepare_prompts
 from model_configs import model_configs, return_client, model_name_mappings
 
 
@@ -62,16 +61,16 @@ def process_single_prompt(args):
     return prompt
 
 
-def main(langs=['en', 'tr', 'de', 'fr', 'ru'], suffixes=[True, False], k=3):
+def main(langs=['bn'], suffixes=[True, False], k=3):
     """
     For each model, language, and suffix combination, the same set of prompts is run k times.
     The results are saved into a file named based on the model name, language, and suffix.
     """
     run_models = [
         # {'model_name': 'DeepSeek-V3', 'provider': 'together'},
-        # {'model_name': 'llama-3.1-8b-instruct-turbo', 'provider': 'together'},
+        {'model_name': 'llama-3.1-8b-instruct-turbo', 'provider': 'together'},
         # {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
-        # {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
+        {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
         # {'model_name': 'aya_8b_it', 'provider': 'together'},
         {'model_name': "Gemma 2 9b", 'provider': 'together'},
         {'model_name': "Gemma 2 27B", 'provider': 'together'},
@@ -115,4 +114,4 @@ def main(langs=['en', 'tr', 'de', 'fr', 'ru'], suffixes=[True, False], k=3):
 
 
 if __name__ == '__main__':
-    main(k=30)
+    main(langs=['en'], k=30)

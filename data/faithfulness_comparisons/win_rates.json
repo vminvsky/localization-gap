@@ -1,162 +1,162 @@
 {
   "win_rates": {
     "bn": {
-      "explicit": 0.21944444444444444,
-      "implicit": 0.125,
-      "steering": 0.44722222222222224
+      "explicit": 0.2222222222222222,
+      "implicit": 0.13333333333333333,
+      "steering": 0.4388888888888889
     },
     "ru": {
-      "explicit": 0.19444444444444445,
-      "implicit": 0.06666666666666667,
-      "steering": 0.21944444444444444
+      "explicit": 0.21944444444444444,
+      "implicit": 0.06944444444444445,
+      "steering": 0.20277777777777778
     },
     "fr": {
-      "explicit": 0.16666666666666666,
-      "implicit": 0.03611111111111111,
-      "steering": 0.28888888888888886
+      "explicit": 0.1361111111111111,
+      "implicit": 0.06666666666666667,
+      "steering": 0.3194444444444444
     },
     "en": {
-      "explicit": 0.013888888888888888,
-      "implicit": 0.26944444444444443,
-      "steering": 0.48333333333333334
+      "explicit": 0.016666666666666666,
+      "implicit": 0.3,
+      "steering": 0.5055555555555555
     },
     "de": {
-      "explicit": 0.05,
-      "implicit": 0.041666666666666664
+      "explicit": 0.06111111111111111,
+      "implicit": 0.04722222222222222
     },
     "tr": {
-      "explicit": 0.3055555555555556,
-      "implicit": 0.06111111111111111,
-      "steering": 0.24444444444444444
+      "explicit": 0.30833333333333335,
+      "implicit": 0.05555555555555555,
+      "steering": 0.225
     }
   },
   "confidence_intervals": {
     "bn": {
       "explicit": [
-        0.18055555555555555,
-        0.2638888888888889
+        0.1832638888888889,
+        0.2639583333333333
       ],
       "implicit": [
-        0.09166666666666666,
-        0.15562499999999993
+        0.09722222222222222,
+        0.16944444444444445
       ],
       "steering": [
-        0.4,
-        0.5055555555555555
+        0.39166666666666666,
+        0.4861111111111111
       ]
     },
     "ru": {
       "explicit": [
-        0.15555555555555556,
-        0.2361111111111111
+        0.17777777777777778,
+        0.2611111111111111
       ],
       "implicit": [
-        0.041666666666666664,
-        0.09444444444444444
+        0.044444444444444446,
+        0.09451388888888883
       ],
       "steering": [
-        0.18055555555555555,
-        0.26673611111111106
+        0.16111111111111112,
+        0.24444444444444444
       ]
     },
     "fr": {
       "explicit": [
-        0.13055555555555556,
-        0.20277777777777778
+        0.10277777777777777,
+        0.16944444444444445
       ],
       "implicit": [
-        0.016666666666666666,
-        0.05555555555555555
+        0.03888888888888889,
+        0.09444444444444444
       ],
       "steering": [
-        0.24444444444444444,
-        0.33618055555555554
+        0.2777777777777778,
+        0.36673611111111104
       ]
     },
     "en": {
       "explicit": [
-        0.002777777777777778,
-        0.027777777777777776
+        0.005555555555555556,
+        0.030555555555555555
       ],
       "implicit": [
-        0.22777777777777777,
-        0.3111805555555555
+        0.25277777777777777,
+        0.34444444444444444
       ],
       "steering": [
-        0.4305555555555556,
-        0.5361111111111111
+        0.45555555555555555,
+        0.5583333333333333
       ]
     },
     "de": {
       "explicit": [
-        0.027777777777777776,
-        0.075
+        0.03888888888888889,
+        0.08611111111111111
       ],
       "implicit": [
-        0.022222222222222223,
-        0.06111111111111111
+        0.025,
+        0.06944444444444445
       ]
     },
     "tr": {
       "explicit": [
-        0.2611111111111111,
-        0.35562499999999997
+        0.25833333333333336,
+        0.35555555555555557
       ],
       "implicit": [
-        0.03611111111111111,
-        0.08611111111111111
+        0.03333333333333333,
+        0.08055555555555556
       ],
       "steering": [
-        0.19444444444444445,
-        0.28888888888888886
+        0.18055555555555555,
+        0.26944444444444443
       ]
     }
   },
   "counts": {
     "bn": {
-      "explicit_wins": 79,
-      "implicit_wins": 45,
-      "ties_impl_expl": 236,
-      "explicit_wins_vs_steering": 29,
-      "steering_wins": 161,
-      "ties_steer_expl": 170
+      "explicit_wins": 80,
+      "implicit_wins": 48,
+      "ties_impl_expl": 232,
+      "explicit_wins_vs_steering": 39,
+      "steering_wins": 158,
+      "ties_steer_expl": 163
     },
     "ru": {
-      "explicit_wins": 70,
-      "implicit_wins": 24,
-      "ties_impl_expl": 266,
-      "explicit_wins_vs_steering": 32,
-      "steering_wins": 79,
-      "ties_steer_expl": 249
+      "explicit_wins": 79,
+      "implicit_wins": 25,
+      "ties_impl_expl": 256,
+      "explicit_wins_vs_steering": 36,
+      "steering_wins": 73,
+      "ties_steer_expl": 251
     },
     "fr": {
-      "explicit_wins": 60,
-      "implicit_wins": 13,
+      "explicit_wins": 49,
+      "implicit_wins": 24,
       "ties_impl_expl": 287,
-      "explicit_wins_vs_steering": 32,
-      "steering_wins": 104,
-      "ties_steer_expl": 224
+      "explicit_wins_vs_steering": 27,
+      "steering_wins": 115,
+      "ties_steer_expl": 218
     },
     "en": {
-      "explicit_wins": 5,
-      "implicit_wins": 97,
-      "ties_impl_expl": 258,
-      "explicit_wins_vs_steering": 2,
-      "steering_wins": 174,
-      "ties_steer_expl": 184
+      "explicit_wins": 6,
+      "implicit_wins": 108,
+      "ties_impl_expl": 246,
+      "explicit_wins_vs_steering": 1,
+      "steering_wins": 182,
+      "ties_steer_expl": 177
     },
     "de": {
-      "explicit_wins": 18,
-      "implicit_wins": 15,
-      "ties_impl_expl": 327
+      "explicit_wins": 22,
+      "implicit_wins": 17,
+      "ties_impl_expl": 321
     },
     "tr": {
-      "explicit_wins": 110,
-      "implicit_wins": 22,
-      "ties_impl_expl": 228,
-      "explicit_wins_vs_steering": 62,
-      "steering_wins": 88,
-      "ties_steer_expl": 210
+      "explicit_wins": 111,
+      "implicit_wins": 20,
+      "ties_impl_expl": 229,
+      "explicit_wins_vs_steering": 72,
+      "steering_wins": 81,
+      "ties_steer_expl": 207
     }
   }
 }

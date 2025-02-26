@@ -1,0 +1,162 @@
+{
+  "win_rates": {
+    "bn": {
+      "explicit": 0.14444444444444443,
+      "implicit": 0.025,
+      "steering": 0.11666666666666667
+    },
+    "ru": {
+      "explicit": 0.18333333333333332,
+      "implicit": 0.011111111111111112,
+      "steering": 0.06666666666666667
+    },
+    "fr": {
+      "explicit": 0.15,
+      "implicit": 0.011111111111111112,
+      "steering": 0.26944444444444443
+    },
+    "en": {
+      "explicit": 0.04722222222222222,
+      "implicit": 0.11666666666666667,
+      "steering": 0.3972222222222222
+    },
+    "de": {
+      "explicit": 0.075,
+      "implicit": 0.025
+    },
+    "tr": {
+      "explicit": 0.25277777777777777,
+      "implicit": 0.011111111111111112,
+      "steering": 0.10833333333333334
+    }
+  },
+  "confidence_intervals": {
+    "bn": {
+      "explicit": [
+        0.1111111111111111,
+        0.18333333333333332
+      ],
+      "implicit": [
+        0.011111111111111112,
+        0.041666666666666664
+      ],
+      "steering": [
+        0.08333333333333333,
+        0.1527777777777778
+      ]
+    },
+    "ru": {
+      "explicit": [
+        0.14444444444444443,
+        0.225
+      ],
+      "implicit": [
+        0.002777777777777778,
+        0.022222222222222223
+      ],
+      "steering": [
+        0.041666666666666664,
+        0.09166666666666666
+      ]
+    },
+    "fr": {
+      "explicit": [
+        0.11666666666666667,
+        0.18611111111111112
+      ],
+      "implicit": [
+        0.002777777777777778,
+        0.022222222222222223
+      ],
+      "steering": [
+        0.225,
+        0.3138888888888889
+      ]
+    },
+    "en": {
+      "explicit": [
+        0.027777777777777776,
+        0.06944444444444445
+      ],
+      "implicit": [
+        0.08611111111111111,
+        0.15006944444444437
+      ],
+      "steering": [
+        0.34715277777777775,
+        0.44729166666666664
+      ]
+    },
+    "de": {
+      "explicit": [
+        0.05,
+        0.10277777777777777
+      ],
+      "implicit": [
+        0.011111111111111112,
+        0.041666666666666664
+      ]
+    },
+    "tr": {
+      "explicit": [
+        0.2111111111111111,
+        0.29451388888888885
+      ],
+      "implicit": [
+        0.002777777777777778,
+        0.025
+      ],
+      "steering": [
+        0.07777777777777778,
+        0.14166666666666666
+      ]
+    }
+  },
+  "counts": {
+    "bn": {
+      "explicit_wins": 52,
+      "implicit_wins": 9,
+      "ties_impl_expl": 299,
+      "explicit_wins_vs_steering": 51,
+      "steering_wins": 42,
+      "ties_steer_expl": 267
+    },
+    "ru": {
+      "explicit_wins": 66,
+      "implicit_wins": 4,
+      "ties_impl_expl": 290,
+      "explicit_wins_vs_steering": 58,
+      "steering_wins": 24,
+      "ties_steer_expl": 278
+    },
+    "fr": {
+      "explicit_wins": 54,
+      "implicit_wins": 4,
+      "ties_impl_expl": 302,
+      "explicit_wins_vs_steering": 27,
+      "steering_wins": 97,
+      "ties_steer_expl": 236
+    },
+    "en": {
+      "explicit_wins": 17,
+      "implicit_wins": 42,
+      "ties_impl_expl": 301,
+      "explicit_wins_vs_steering": 7,
+      "steering_wins": 143,
+      "ties_steer_expl": 210
+    },
+    "de": {
+      "explicit_wins": 27,
+      "implicit_wins": 9,
+      "ties_impl_expl": 324
+    },
+    "tr": {
+      "explicit_wins": 91,
+      "implicit_wins": 4,
+      "ties_impl_expl": 265,
+      "explicit_wins_vs_steering": 54,
+      "steering_wins": 39,
+      "ties_steer_expl": 267
+    }
+  }
+}

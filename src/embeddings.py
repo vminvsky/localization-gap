@@ -142,6 +142,14 @@ def save_embeddings(embeddings, model_name, output_dir='data/embeddings'):
 
 def main(model_name='llama-3.1-70b-instruct-turbo'):
     """Main function to create and save embeddings"""
+    # Check if embeddings already exist
+    output_dir = Path('data/embeddings') / model_name
+    if (output_dir / 'metadata.csv').exists() and (output_dir / 'embeddings.npy').exists():
+        print(f"Embeddings already exist for {model_name}, skipping...")
+        metadata_df = pd.read_csv(output_dir / 'metadata.csv')
+        embedding_matrix = np.load(output_dir / 'embeddings.npy')
+        return metadata_df, embedding_matrix
+    
     # Load generations
     generations = load_generations(model_name=model_name)
     
@@ -154,4 +162,5 @@ def main(model_name='llama-3.1-70b-instruct-turbo'):
     return metadata_df, embedding_matrix
 
 if __name__ == '__main__':
-    metadata_df, embedding_matrix = main()
+    for model_name in ['llama-3.1-70b-instruct-turbo', 'llama-3.1-8b-instruct-turbo', 'Gemma 2 9b', 'Gemma 2 27B', 'gpt-4o']:
+        metadata_df, embedding_matrix = main(model_name)

@@ -1,0 +1,35 @@
+{
+  "win_rates": {
+    "en": {
+      "explicit": 0.16111111111111112,
+      "implicit": 0.05,
+      "steering": 0.15555555555555556
+    }
+  },
+  "confidence_intervals": {
+    "en": {
+      "explicit": [
+        0.12222222222222222,
+        0.19722222222222222
+      ],
+      "implicit": [
+        0.027777777777777776,
+        0.075
+      ],
+      "steering": [
+        0.11944444444444445,
+        0.19444444444444445
+      ]
+    }
+  },
+  "counts": {
+    "en": {
+      "explicit_wins": 58,
+      "implicit_wins": 18,
+      "ties_impl_expl": 284,
+      "explicit_wins_vs_steering": 25,
+      "steering_wins": 56,
+      "ties_steer_expl": 279
+    }
+  }
+}

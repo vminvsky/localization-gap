@@ -139,7 +139,8 @@ def contrastive_act_gen_opt(
                     logits = nnmodel.lm_head.output[:, -1, :].save()
                 
                 if use_sampling:
-                    logits_value = logits.value.cpu()
+                    # Remove .value since logits is already a tensor
+                    logits_value = logits.cpu()
                     probs, next_token = decode_next_token_with_sampling(logits_value)
                     probas_for_this_layer.append(probs.cpu())
                     next_token = next_token.to(device)

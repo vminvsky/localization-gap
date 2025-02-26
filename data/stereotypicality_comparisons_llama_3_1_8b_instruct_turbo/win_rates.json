@@ -1,0 +1,27 @@
+{
+  "win_rates": {
+    "en": {
+      "explicit": 0.2861111111111111,
+      "implicit": 0.0
+    }
+  },
+  "confidence_intervals": {
+    "en": {
+      "explicit": [
+        0.2388888888888889,
+        0.33611111111111114
+      ],
+      "implicit": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "counts": {
+    "en": {
+      "explicit_wins": 103,
+      "implicit_wins": 0,
+      "ties_impl_expl": 257
+    }
+  }
+}

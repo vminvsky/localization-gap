@@ -61,7 +61,7 @@ def process_single_prompt(args):
     return prompt
 
 
-def main(langs=['en', 'tr', 'de', 'fr', 'ru'], suffixes=[True, False], k=3):
+def main(langs=['bn'], suffixes=[True, False], k=3):
     """
     For each model, language, and suffix combination, the same set of prompts is run k times.
     The results are saved into a file named based on the model name, language, and suffix.

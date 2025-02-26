@@ -35,6 +35,7 @@ Text B:
 Which text is more faithful to the {culture} culture? Answer with just 'A' if Text A is more faithful, 'B' if Text B is more faithful, or 'TIE' if they are equally faithful.
 """
 
+
 async def query_model(prompt: str, model: str = "gpt-4o") -> str:
     async with REQUEST_SEMAPHORE:
         response = await acompletion(
@@ -100,7 +101,7 @@ async def load_steering_json_file(filepath):
             
     return result
 
-async def main(original_dir, steering_dir, output_dir, num_samples=5):
+async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_steering=False):
     os.makedirs(output_dir, exist_ok=True)
     
     # Find all language files
@@ -116,11 +117,12 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
     
     # Find steering files
     steering_files = {}
-    for root, _, files in os.walk(steering_dir):
-        for file in files:
-            if file.endswith('.json'):
-                lang = file.split('_')[0]
-                steering_files[lang] = os.path.join(root, file)
+    if compare_steering:
+        for root, _, files in os.walk(steering_dir):
+            for file in files:
+                if file.endswith('.json'):
+                    lang = file.split('_')[0]
+                    steering_files[lang] = os.path.join(root, file)
     
     # For each language, compare explicit vs implicit and explicit vs steering
     all_comparisons = {}
@@ -132,9 +134,9 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
             explicit_data = await load_json_file(language_files[lang]['True'])
             implicit_data = await load_json_file(language_files[lang]['False'])
             
-            # Load steering file if available
+            # Load steering file if available and if compare_steering is true
             steering_data = None
-            if lang in steering_files:
+            if compare_steering and lang in steering_files:
                 steering_data = await load_steering_json_file(steering_files[lang])
             
             # Count comparisons to make
@@ -148,10 +150,9 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
                 if matching_implicit_prompts and len(matching_implicit_prompts[0]['generation']) >= num_samples:
                     num_explicit_implicit_comparisons += num_samples
                 
-                # Match with steering prompt
-                if steering_data:
+                # Match with steering prompt if compare_steering is true
+                if compare_steering and steering_data:
                     matching_steering_prompts = [p for p in steering_data if p['prompt_idx'] == explicit_prompt['prompt_idx']]
-                    
                     
                     if matching_steering_prompts and 'steering_samples' in matching_steering_prompts[0]:
                         steering_samples = matching_steering_prompts[0]['steering_samples']
@@ -220,7 +221,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
                         })
             
             # Perform comparisons for explicit vs steering
-            if steering_data:
+            if steering_data and compare_steering:
                 for explicit_prompt in explicit_data:
                     matching_steering_prompts = [p for p in steering_data if p['prompt_idx'] == explicit_prompt['prompt_idx']]
                     
@@ -303,7 +304,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
             all_counts[lang]["ties_impl_expl"] = ties
         
         # Explicit vs Steering
-        if "explicit_vs_steering" in all_comparisons[lang] and all_comparisons[lang]["explicit_vs_steering"]:
+        if "explicit_vs_steering" in all_comparisons[lang] and all_comparisons[lang]["explicit_vs_steering"] and compare_steering:
             explicit_wins_vs_steering = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'A')
             steering_wins = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'B')
             ties_steer = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'TIE')
@@ -348,7 +349,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
             )
         
         # Explicit vs Steering
-        if "explicit_vs_steering" in all_comparisons[lang] and all_comparisons[lang]["explicit_vs_steering"]:
+        if "explicit_vs_steering" in all_comparisons[lang] and all_comparisons[lang]["explicit_vs_steering"] and compare_steering:
             steering_wins = [1 if comp["result"] == 'B' else 0 for comp in all_comparisons[lang]["explicit_vs_steering"]]
             
             # Bootstrap for steering
@@ -378,7 +379,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
     plot_data = []
     
     for lang in win_rates:
-        for method in ["implicit", "explicit", "steering"]:
+        for method in ["implicit", "explicit", "steering"] if compare_steering else ["implicit", "explicit"]:
             if method in win_rates[lang]:
                 error_low = 0
                 error_high = 0
@@ -451,7 +452,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5):
             if lang in confidence_intervals and method in confidence_intervals[lang]:
                 print(f"    95% CI: [{confidence_intervals[lang][method][0]:.2f}, {confidence_intervals[lang][method][1]:.2f}]")
         print(f"  Total comparisons: {all_counts[lang]['explicit_wins'] + all_counts[lang]['implicit_wins'] + all_counts[lang]['ties_impl_expl']}")
-        if "steering_wins" in all_counts[lang]:
+        if "steering_wins" in all_counts[lang] and compare_steering:
             print(f"  Steering comparisons: {all_counts[lang]['explicit_wins_vs_steering'] + all_counts[lang]['steering_wins'] + all_counts[lang]['ties_steer_expl']}")
 
 if __name__ == "__main__":
@@ -460,6 +461,7 @@ if __name__ == "__main__":
     parser.add_argument("--steering_dir", type=str, default="data/open_ended_generation/steering_2")
     parser.add_argument("--output_dir", type=str, default="data/faithfulness_comparisons")
     parser.add_argument("--num_samples", type=int, default=15, help="Number of samples to compare per prompt")
+    parser.add_argument("--compare_steering", action="store_true", help="Whether to compare steering")
     args = parser.parse_args()
     
-    asyncio.run(main(args.original_dir, args.steering_dir, args.output_dir, args.num_samples)) 
+    asyncio.run(main(args.original_dir, args.steering_dir, args.output_dir, args.num_samples, args.compare_steering)) 

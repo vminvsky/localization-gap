@@ -13,8 +13,7 @@ from collections import defaultdict
 
 load_dotenv()
 
-from prompts import PromptDataset, generate_prompts_chat, prepare_prompts
-from utils import model_paths, printv, estimate_cost
+from prompts import generate_prompts_chat, prepare_prompts
 from model_configs import model_configs, return_client, model_name_mappings
 
 
@@ -69,9 +68,9 @@ def main(langs=['en', 'tr', 'de', 'fr', 'ru'], suffixes=[True, False], k=3):
     """
     run_models = [
         # {'model_name': 'DeepSeek-V3', 'provider': 'together'},
-        # {'model_name': 'llama-3.1-8b-instruct-turbo', 'provider': 'together'},
+        {'model_name': 'llama-3.1-8b-instruct-turbo', 'provider': 'together'},
         # {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
-        # {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
+        {'model_name': 'llama-3.1-70b-instruct-turbo', 'provider': 'together'},
         # {'model_name': 'aya_8b_it', 'provider': 'together'},
         {'model_name': "Gemma 2 9b", 'provider': 'together'},
         {'model_name': "Gemma 2 27B", 'provider': 'together'},
@@ -115,4 +114,4 @@ def main(langs=['en', 'tr', 'de', 'fr', 'ru'], suffixes=[True, False], k=3):
 
 
 if __name__ == '__main__':
-    main(k=30)
+    main(langs=['en'], k=30)

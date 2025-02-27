@@ -81,7 +81,7 @@ def plot_across_models_localization(df):
     plt.ylim(0, 2.6)
     plt.legend(fontsize=16)
     plt.tight_layout()
-    plt.savefig("stereotypicality_across_models_localization.pdf")
+    plt.savefig("../visuals/stereotypicality_across_models_localization.pdf")
     plt.close()
 
 def plot_by_language_localization(df):
@@ -144,7 +144,7 @@ def main():
         return
     
     plot_across_models_localization(df)
-    plot_by_language_localization(df)
+    # plot_by_language_localization(df)
 
 if __name__ == "__main__":
     main() 

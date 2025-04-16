@@ -1,0 +1,14 @@
+pandas
+openai
+tabulate
+sae-dashboard
+transformer-lens
+jaxtyping
+sae-lens  
+git+https://github.com/callummcdougall/eindex.git
+nbformat
+translate
+nnsight
+shap
+catboost
+together

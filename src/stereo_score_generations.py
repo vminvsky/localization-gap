@@ -95,7 +95,7 @@ async def main(input_dir: str, output_dir: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_dir", type=str, default="data/open_ended_generation/per_model")
-    parser.add_argument("--output_dir", type=str, default="data/open_ended_generation_scored/per_model")
+    parser.add_argument("--input_dir", type=str, default="../data/open_ended_generation/per_model")
+    parser.add_argument("--output_dir", type=str, default="../data/open_ended_generation_scored/per_model")
     args = parser.parse_args()
     asyncio.run(main(args.input_dir, args.output_dir)) 

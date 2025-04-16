@@ -457,9 +457,9 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--original_dir", type=str, default="data/open_ended_generation/per_model/Gemma 2 9b")
-    parser.add_argument("--steering_dir", type=str, default="data/open_ended_generation/steering_2")
-    parser.add_argument("--output_dir", type=str, default="data/faithfulness_comparisons")
+    parser.add_argument("--original_dir", type=str, default="../data/open_ended_generation/per_model/Gemma 2 9b")
+    parser.add_argument("--steering_dir", type=str, default="../data/open_ended_generation/steering_2")
+    parser.add_argument("--output_dir", type=str, default="../data/faithfulness_comparisons")
     parser.add_argument("--num_samples", type=int, default=15, help="Number of samples to compare per prompt")
     parser.add_argument("--compare_steering", action="store_true", help="Whether to compare steering")
     args = parser.parse_args()

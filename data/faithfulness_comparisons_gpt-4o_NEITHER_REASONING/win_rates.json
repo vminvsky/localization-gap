@@ -1,0 +1,128 @@
+{
+  "win_rates": {
+    "de": {
+      "explicit": 0.5714285714285714,
+      "implicit": 0.2857142857142857
+    },
+    "tr": {
+      "explicit": 0.6621621621621622,
+      "implicit": 0.1891891891891892
+    },
+    "ru": {
+      "explicit": 0.5959595959595959,
+      "implicit": 0.30303030303030304
+    },
+    "fr": {
+      "explicit": 0.6611570247933884,
+      "implicit": 0.19834710743801653
+    },
+    "bn": {
+      "explicit": 0.695906432748538,
+      "implicit": 0.15789473684210525
+    },
+    "en": {
+      "explicit": 0.8214285714285714,
+      "implicit": 0.11428571428571428
+    }
+  },
+  "confidence_intervals": {
+    "de": {
+      "explicit": [
+        0.4444444444444444,
+        0.6984126984126984
+      ],
+      "implicit": [
+        0.1746031746031746,
+        0.3968253968253968
+      ]
+    },
+    "tr": {
+      "explicit": [
+        0.5878378378378378,
+        0.7364864864864865
+      ],
+      "implicit": [
+        0.12837837837837837,
+        0.25675675675675674
+      ]
+    },
+    "ru": {
+      "explicit": [
+        0.494949494949495,
+        0.696969696969697
+      ],
+      "implicit": [
+        0.21212121212121213,
+        0.40404040404040403
+      ]
+    },
+    "fr": {
+      "explicit": [
+        0.5702479338842975,
+        0.743801652892562
+      ],
+      "implicit": [
+        0.1322314049586777,
+        0.2727272727272727
+      ]
+    },
+    "bn": {
+      "explicit": [
+        0.6257309941520468,
+        0.7660818713450293
+      ],
+      "implicit": [
+        0.10526315789473684,
+        0.21637426900584794
+      ]
+    },
+    "en": {
+      "explicit": [
+        0.7571428571428571,
+        0.8857142857142857
+      ],
+      "implicit": [
+        0.06428571428571428,
+        0.16428571428571428
+      ]
+    }
+  },
+  "counts": {
+    "de": {
+      "explicit_wins": 36,
+      "implicit_wins": 18,
+      "ties_impl_expl": 9,
+      "neither_impl_expl": 297
+    },
+    "tr": {
+      "explicit_wins": 98,
+      "implicit_wins": 28,
+      "ties_impl_expl": 22,
+      "neither_impl_expl": 212
+    },
+    "ru": {
+      "explicit_wins": 59,
+      "implicit_wins": 30,
+      "ties_impl_expl": 10,
+      "neither_impl_expl": 261
+    },
+    "fr": {
+      "explicit_wins": 80,
+      "implicit_wins": 24,
+      "ties_impl_expl": 17,
+      "neither_impl_expl": 239
+    },
+    "bn": {
+      "explicit_wins": 119,
+      "implicit_wins": 27,
+      "ties_impl_expl": 25,
+      "neither_impl_expl": 189
+    },
+    "en": {
+      "explicit_wins": 115,
+      "implicit_wins": 16,
+      "ties_impl_expl": 9,
+      "neither_impl_expl": 220
+    }
+  }
+}

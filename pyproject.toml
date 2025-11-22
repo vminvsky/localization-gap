@@ -1,0 +1,15 @@
+[project]
+name = "localization-gap"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "aiofiles>=25.1.0",
+    "asyncio>=4.0.0",
+    "litellm>=1.80.0",
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.5",
+    "openai>=2.8.1",
+    "seaborn>=0.13.2",
+]

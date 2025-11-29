@@ -9,12 +9,21 @@ import seaborn as sns
 from tqdm import tqdm
 import aiofiles
 from litellm import acompletion
+from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import re
 from collections import defaultdict
 
-MAX_CONCURRENT_REQUESTS = 50
+load_dotenv()
+
+MAX_CONCURRENT_REQUESTS = 20
 REQUEST_SEMAPHORE = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+
+# Initialize OpenAI client
+openai_client = AsyncOpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),
+    base_url=os.environ.get("OPENAI_BASE_URL"),
+)
 
 LANG_TO_CULTURE = {
     "en": "American",
@@ -24,7 +33,7 @@ LANG_TO_CULTURE = {
     "bn": "Bengali",
 }
 
-PAIRWISE_JUDGE_PROMPT = """You will be given two text excerpts from different sources. I would like you to compare them based on how faithful they are to the {culture} culture. Faithful means that the text represents cultural practices, beliefs, or values in a nuanced, accurate, and respectful manner. It acknowledges internal diversity and context, avoids homogenizing or flattening a group’s identity, and strives for factual correctness.
+PAIRWISE_JUDGE_PROMPT = """You will be given two text excerpts from different sources. I would like you to compare them based on how faithful they are to the {culture} culture. Faithful means that the text represents cultural practices, beliefs, or values in a nuanced, accurate, and respectful manner. It acknowledges internal diversity and context, avoids homogenizing or flattening a group's identity, and strives for factual correctness.
 
 Text A:
 {text_a}
@@ -32,40 +41,63 @@ Text A:
 Text B:
 {text_b}
 
-Which text is more faithful to the {culture} culture? Answer with just 'A' if Text A is more faithful, 'B' if Text B is more faithful, or 'TIE' if they are equally faithful.
+Which text is more faithful to the {culture} culture? Answer with:
+- 'A' (if Text A is more faithful)
+- 'B' (if Text B is more faithful)
+- 'TIE' (if they are equally faithful)
+- 'NEITHER' (if both texts are not faithful (i.e., neither text represents the culture faithfully))
+
+Do only answer with the letter, no other text.
 """
 
 
-async def query_model(prompt: str, model: str = "gpt-4o") -> str:
+async def query_model(prompt: str, model: str = "gpt-4o-2024-11-20") -> dict:
     async with REQUEST_SEMAPHORE:
-        response = await acompletion(
+        response = await openai_client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
-            max_tokens=100,
+            max_tokens=500,
         )
-    return response.choices[0].message.content
+    output_text = response.choices[0].message.content
+    reasoning_text = getattr(response.choices[0].message, 'reasoning', None)
 
-async def compare_faithfulness(text_a: str, text_b: str, culture: str, progress_bar) -> str:
+    return {
+        "content": output_text,
+        "reasoning": reasoning_text
+    }
+
+async def compare_faithfulness(text_a: str, text_b: str, culture: str, progress_bar, model: str = "gpt-4o-2024-11-20") -> dict:
     judge_prompt = PAIRWISE_JUDGE_PROMPT.format(text_a=text_a, text_b=text_b, culture=culture)
-    response = await query_model(judge_prompt)
-        
-    # Extract the judge's decision (A, B, or TIE)
-    if 'A' in response and not 'B' in response:
+    model_response = await query_model(judge_prompt, model=model)
+
+    # Extract content and reasoning from model response
+    response_content = model_response["content"]
+    response_reasoning = model_response["reasoning"]
+
+    # Extract the judge's decision (A, B, TIE, or NEITHER) from content
+    # Check for NEITHER first
+    if re.search(r'(?i)\bneither\b', response_content):
+        result = 'NEITHER'
+    elif 'A' in response_content and not 'B' in response_content:
         result = 'A'
-    elif 'B' in response and not 'A' in response:
+    elif 'B' in response_content and not 'A' in response_content:
         result = 'B'
     else:
         # Look for A or B with some common indicators
-        if re.search(r'(?i)text\s*a\s*is\s*more', response) or re.search(r'(?i)choose\s*a', response):
+        if re.search(r'(?i)text\s*a\s*is\s*more', response_content) or re.search(r'(?i)choose\s*a', response_content):
             result = 'A'
-        elif re.search(r'(?i)text\s*b\s*is\s*more', response) or re.search(r'(?i)choose\s*b', response):
+        elif re.search(r'(?i)text\s*b\s*is\s*more', response_content) or re.search(r'(?i)choose\s*b', response_content):
             result = 'B'
         else:
             result = 'TIE'
-    
+
     progress_bar.update(1)
-    return result
+    return {
+        "result": result,
+        "raw_response": response_content,
+        "reasoning": response_reasoning
+    }
 
 async def load_json_file(filepath):
     async with aiofiles.open(filepath, 'r') as f:
@@ -101,7 +133,7 @@ async def load_steering_json_file(filepath):
             
     return result
 
-async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_steering=False):
+async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_steering=False, model="gpt-4o-2024-11-20"):
     os.makedirs(output_dir, exist_ok=True)
     
     # Find all language files
@@ -193,13 +225,19 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
                             text_b = explicit_gen[0]
                             assignment = "implicit_a_explicit_b"
                         
-                        result = await compare_faithfulness(
-                            text_a=text_a, 
-                            text_b=text_b, 
+                        comparison_result = await compare_faithfulness(
+                            text_a=text_a,
+                            text_b=text_b,
                             culture=LANG_TO_CULTURE.get(lang, lang),
-                            progress_bar=pbar
+                            progress_bar=pbar,
+                            model=model
                         )
-                        
+
+                        # Extract result, raw_response, and reasoning from dict
+                        result = comparison_result["result"]
+                        raw_response = comparison_result["raw_response"]
+                        reasoning = comparison_result["reasoning"]
+
                         # Transform result based on assignment
                         final_result = result
                         if assignment == "implicit_a_explicit_b":
@@ -207,7 +245,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
                                 final_result = "B"  # If implicit (A) is more faithful, explicit (B) loses
                             elif result == "B":
                                 final_result = "A"  # If explicit (B) is more faithful, explicit wins
-                        
+
                         # Store comparison result
                         all_comparisons[lang]["explicit_vs_implicit"].append({
                             "prompt_idx": explicit_prompt['prompt_idx'],
@@ -217,7 +255,10 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
                             "explicit_text": explicit_gen[0],
                             "implicit_text": implicit_gen[0],
                             "text_a": text_a,
-                            "text_b": text_b
+                            "text_b": text_b,
+                            "raw_response": raw_response,
+                            "reasoning": reasoning,
+                            "model": model
                         })
             
             # Perform comparisons for explicit vs steering
@@ -246,13 +287,19 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
                                     text_b = explicit_gen[0]
                                     assignment = "steering_a_explicit_b"
                                 
-                                result = await compare_faithfulness(
-                                    text_a=text_a, 
-                                    text_b=text_b, 
+                                comparison_result = await compare_faithfulness(
+                                    text_a=text_a,
+                                    text_b=text_b,
                                     culture=LANG_TO_CULTURE.get(lang, lang),
-                                    progress_bar=pbar
+                                    progress_bar=pbar,
+                                    model=model
                                 )
-                                
+
+                                # Extract result, raw_response, and reasoning from dict
+                                result = comparison_result["result"]
+                                raw_response = comparison_result["raw_response"]
+                                reasoning = comparison_result["reasoning"]
+
                                 # Transform result based on assignment
                                 final_result = result
                                 if assignment == "steering_a_explicit_b":
@@ -260,7 +307,7 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
                                         final_result = "B"  # If steering (A) is more faithful, explicit (B) loses
                                     elif result == "B":
                                         final_result = "A"  # If explicit (B) is more faithful, explicit wins
-                                
+
                                 # Store comparison result
                                 all_comparisons[lang]["explicit_vs_steering"].append({
                                     "prompt_idx": explicit_prompt['prompt_idx'],
@@ -270,7 +317,10 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
                                     "explicit_text": explicit_gen[0],
                                     "steering_text": steering_text,
                                     "text_a": text_a,
-                                    "text_b": text_b
+                                    "text_b": text_b,
+                                    "raw_response": raw_response,
+                                    "reasoning": reasoning,
+                                    "model": model
                                 })
             
             pbar.close()
@@ -293,29 +343,37 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
         explicit_wins = sum(1 for comp in all_comparisons[lang]["explicit_vs_implicit"] if comp["result"] == 'A')
         implicit_wins = sum(1 for comp in all_comparisons[lang]["explicit_vs_implicit"] if comp["result"] == 'B')
         ties = sum(1 for comp in all_comparisons[lang]["explicit_vs_implicit"] if comp["result"] == 'TIE')
-        
+        neither_count = sum(1 for comp in all_comparisons[lang]["explicit_vs_implicit"] if comp["result"] == 'NEITHER')
+
         total = len(all_comparisons[lang]["explicit_vs_implicit"])
-        if total > 0:
-            win_rates[lang]["explicit"] = explicit_wins / total
-            win_rates[lang]["implicit"] = implicit_wins / total
-            
+        # Calculate win rates excluding NEITHER results
+        total_excluding_neither = total - neither_count
+        if total_excluding_neither > 0:
+            win_rates[lang]["explicit"] = explicit_wins / total_excluding_neither
+            win_rates[lang]["implicit"] = implicit_wins / total_excluding_neither
+
             all_counts[lang]["explicit_wins"] = explicit_wins
             all_counts[lang]["implicit_wins"] = implicit_wins
             all_counts[lang]["ties_impl_expl"] = ties
+            all_counts[lang]["neither_impl_expl"] = neither_count
         
         # Explicit vs Steering
         if "explicit_vs_steering" in all_comparisons[lang] and all_comparisons[lang]["explicit_vs_steering"] and compare_steering:
             explicit_wins_vs_steering = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'A')
             steering_wins = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'B')
             ties_steer = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'TIE')
-            
+            neither_steer = sum(1 for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] == 'NEITHER')
+
             total_steer = len(all_comparisons[lang]["explicit_vs_steering"])
-            if total_steer > 0:
-                win_rates[lang]["steering"] = steering_wins / total_steer
-                
+            # Calculate win rates excluding NEITHER results
+            total_steer_excluding_neither = total_steer - neither_steer
+            if total_steer_excluding_neither > 0:
+                win_rates[lang]["steering"] = steering_wins / total_steer_excluding_neither
+
                 all_counts[lang]["explicit_wins_vs_steering"] = explicit_wins_vs_steering
                 all_counts[lang]["steering_wins"] = steering_wins
                 all_counts[lang]["ties_steer_expl"] = ties_steer
+                all_counts[lang]["neither_steer_expl"] = neither_steer
     
     # Calculate confidence intervals with bootstrap
     num_bootstrap = 1000
@@ -323,45 +381,53 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
     for lang in all_comparisons:
         # Explicit vs Implicit
         if all_comparisons[lang]["explicit_vs_implicit"]:
-            explicit_wins = [1 if comp["result"] == 'A' else 0 for comp in all_comparisons[lang]["explicit_vs_implicit"]]
-            implicit_wins = [1 if comp["result"] == 'B' else 0 for comp in all_comparisons[lang]["explicit_vs_implicit"]]
-            
-            # Bootstrap for explicit
-            explicit_bootstrap = []
-            for _ in range(num_bootstrap):
-                indices = np.random.choice(len(explicit_wins), len(explicit_wins), replace=True)
-                explicit_bootstrap.append(np.mean([explicit_wins[i] for i in indices]))
-            
-            # Bootstrap for implicit
-            implicit_bootstrap = []
-            for _ in range(num_bootstrap):
-                indices = np.random.choice(len(implicit_wins), len(implicit_wins), replace=True)
-                implicit_bootstrap.append(np.mean([implicit_wins[i] for i in indices]))
-            
-            confidence_intervals[lang]["explicit"] = (
-                np.percentile(explicit_bootstrap, 2.5),
-                np.percentile(explicit_bootstrap, 97.5)
-            )
-            
-            confidence_intervals[lang]["implicit"] = (
-                np.percentile(implicit_bootstrap, 2.5),
-                np.percentile(implicit_bootstrap, 97.5)
-            )
+            # Exclude NEITHER results from bootstrap
+            non_neither_comps = [comp for comp in all_comparisons[lang]["explicit_vs_implicit"] if comp["result"] != 'NEITHER']
+
+            if non_neither_comps:
+                explicit_wins = [1 if comp["result"] == 'A' else 0 for comp in non_neither_comps]
+                implicit_wins = [1 if comp["result"] == 'B' else 0 for comp in non_neither_comps]
+
+                # Bootstrap for explicit
+                explicit_bootstrap = []
+                for _ in range(num_bootstrap):
+                    indices = np.random.choice(len(explicit_wins), len(explicit_wins), replace=True)
+                    explicit_bootstrap.append(np.mean([explicit_wins[i] for i in indices]))
+
+                # Bootstrap for implicit
+                implicit_bootstrap = []
+                for _ in range(num_bootstrap):
+                    indices = np.random.choice(len(implicit_wins), len(implicit_wins), replace=True)
+                    implicit_bootstrap.append(np.mean([implicit_wins[i] for i in indices]))
+
+                confidence_intervals[lang]["explicit"] = (
+                    np.percentile(explicit_bootstrap, 2.5),
+                    np.percentile(explicit_bootstrap, 97.5)
+                )
+
+                confidence_intervals[lang]["implicit"] = (
+                    np.percentile(implicit_bootstrap, 2.5),
+                    np.percentile(implicit_bootstrap, 97.5)
+                )
         
         # Explicit vs Steering
         if "explicit_vs_steering" in all_comparisons[lang] and all_comparisons[lang]["explicit_vs_steering"] and compare_steering:
-            steering_wins = [1 if comp["result"] == 'B' else 0 for comp in all_comparisons[lang]["explicit_vs_steering"]]
-            
-            # Bootstrap for steering
-            steering_bootstrap = []
-            for _ in range(num_bootstrap):
-                indices = np.random.choice(len(steering_wins), len(steering_wins), replace=True)
-                steering_bootstrap.append(np.mean([steering_wins[i] for i in indices]))
-            
-            confidence_intervals[lang]["steering"] = (
-                np.percentile(steering_bootstrap, 2.5),
-                np.percentile(steering_bootstrap, 97.5)
-            )
+            # Exclude NEITHER results from bootstrap
+            non_neither_steer_comps = [comp for comp in all_comparisons[lang]["explicit_vs_steering"] if comp["result"] != 'NEITHER']
+
+            if non_neither_steer_comps:
+                steering_wins = [1 if comp["result"] == 'B' else 0 for comp in non_neither_steer_comps]
+
+                # Bootstrap for steering
+                steering_bootstrap = []
+                for _ in range(num_bootstrap):
+                    indices = np.random.choice(len(steering_wins), len(steering_wins), replace=True)
+                    steering_bootstrap.append(np.mean([steering_wins[i] for i in indices]))
+
+                confidence_intervals[lang]["steering"] = (
+                    np.percentile(steering_bootstrap, 2.5),
+                    np.percentile(steering_bootstrap, 97.5)
+                )
     
     # Save win rates and confidence intervals
     async with aiofiles.open(os.path.join(output_dir, 'win_rates.json'), 'w') as f:
@@ -451,9 +517,29 @@ async def main(original_dir, steering_dir, output_dir, num_samples=5, compare_st
             print(f"  {method}: {rate:.2f}")
             if lang in confidence_intervals and method in confidence_intervals[lang]:
                 print(f"    95% CI: [{confidence_intervals[lang][method][0]:.2f}, {confidence_intervals[lang][method][1]:.2f}]")
-        print(f"  Total comparisons: {all_counts[lang]['explicit_wins'] + all_counts[lang]['implicit_wins'] + all_counts[lang]['ties_impl_expl']}")
+
+        # Print detailed counts for explicit vs implicit
+        total_impl_expl = all_counts[lang]['explicit_wins'] + all_counts[lang]['implicit_wins'] + all_counts[lang]['ties_impl_expl']
+        if 'neither_impl_expl' in all_counts[lang]:
+            total_impl_expl += all_counts[lang]['neither_impl_expl']
+        print(f"  Total comparisons: {total_impl_expl}")
+        print(f"    Explicit wins: {all_counts[lang]['explicit_wins']}")
+        print(f"    Implicit wins: {all_counts[lang]['implicit_wins']}")
+        print(f"    Ties: {all_counts[lang]['ties_impl_expl']}")
+        if 'neither_impl_expl' in all_counts[lang]:
+            print(f"    Neither faithful: {all_counts[lang]['neither_impl_expl']}")
+
+        # Print detailed counts for explicit vs steering if applicable
         if "steering_wins" in all_counts[lang] and compare_steering:
-            print(f"  Steering comparisons: {all_counts[lang]['explicit_wins_vs_steering'] + all_counts[lang]['steering_wins'] + all_counts[lang]['ties_steer_expl']}")
+            total_steer = all_counts[lang]['explicit_wins_vs_steering'] + all_counts[lang]['steering_wins'] + all_counts[lang]['ties_steer_expl']
+            if 'neither_steer_expl' in all_counts[lang]:
+                total_steer += all_counts[lang]['neither_steer_expl']
+            print(f"  Steering comparisons: {total_steer}")
+            print(f"    Explicit wins: {all_counts[lang]['explicit_wins_vs_steering']}")
+            print(f"    Steering wins: {all_counts[lang]['steering_wins']}")
+            print(f"    Ties: {all_counts[lang]['ties_steer_expl']}")
+            if 'neither_steer_expl' in all_counts[lang]:
+                print(f"    Neither faithful: {all_counts[lang]['neither_steer_expl']}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -462,6 +548,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, default="../data/faithfulness_comparisons")
     parser.add_argument("--num_samples", type=int, default=15, help="Number of samples to compare per prompt")
     parser.add_argument("--compare_steering", action="store_true", help="Whether to compare steering")
+    parser.add_argument("--model", type=str, default="gpt-4o-2024-11-20", help="Model to use for comparisons")
     args = parser.parse_args()
-    
-    asyncio.run(main(args.original_dir, args.steering_dir, args.output_dir, args.num_samples, args.compare_steering)) 
+
+    asyncio.run(main(args.original_dir, args.steering_dir, args.output_dir, args.num_samples, args.compare_steering, args.model)) 
